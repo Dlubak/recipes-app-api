@@ -65,3 +65,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.serializer_action_classes[self.action]
         except (KeyError, AttributeError):
             return super().get_serializer_class()
+
+    def perform_create(self, serializer):
+        """
+        Create a new recipe
+        """
+        serializer.save(user=self.request.user)
