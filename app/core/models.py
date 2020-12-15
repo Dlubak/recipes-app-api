@@ -1,3 +1,5 @@
+import uuid
+import os
 from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager,
@@ -6,6 +8,16 @@ from django.contrib.auth.models import (
 )
 from django.conf import settings
 # Create your models here.
+
+
+def recipe_image_file_path(instance, file_name):
+    """
+    Generate file path for new recipe image
+    """
+    extension = file_name.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{extension}'
+
+    return os.path.join('uploads/recipe/', filename)
 
 
 class UserManager(BaseUserManager):
@@ -97,6 +109,7 @@ class Recipe(models.Model):
     link = models.CharField(max_length=255, blank=True)
     ingredients = models.ManyToManyField('Ingredient')
     tags = models.ManyToManyField('Tag')
+    image = models.ImageField(null=True, upload_to=recipe_image_file_path)
 
     def __str__(self):
         return self.title
